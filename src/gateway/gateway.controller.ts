@@ -1,34 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { GatewayService } from './gateway.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
+
 import { CreateGatewayDto } from './dto/create-gateway.dto';
 import { UpdateGatewayDto } from './dto/update-gateway.dto';
+import { ClientGrpc } from '@nestjs/microservices';
+import { lastValueFrom, Observable } from 'rxjs';
 
-@Controller()
+
+interface TaskGrpcService {
+  SayHello(data: {name: string}): Observable<any>
+}
+
+@Controller('task')
 export class GatewayController {
-  constructor(private readonly gatewayService: GatewayService) {}
+  private taskGrpcService: TaskGrpcService;
+  constructor(@Inject('HELLOWORLD_PACKAGE') private client: ClientGrpc) {}
+
+  onModuleInit() {
+    this.taskGrpcService = this.client.getService<TaskGrpcService>('Greeter')
+  }
 
   @Post()
-  create(@Body() createGatewayDto: CreateGatewayDto) {
-    return this.gatewayService.create(createGatewayDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.gatewayService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.gatewayService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGatewayDto: UpdateGatewayDto) {
-    return this.gatewayService.update(+id, updateGatewayDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.gatewayService.remove(+id);
+  async create(@Body() data) {
+    const result = this.taskGrpcService.SayHello({name: 'teste'})
+    const finalResult = await lastValueFrom(result)
+    console.log(finalResult)
+    return 'Veja o console'
   }
 }
