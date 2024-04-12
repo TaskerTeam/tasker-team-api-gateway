@@ -1,18 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Inject,
-  Put,
-  ParseIntPipe,
-} from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { TasksProtoInterface } from 'src/interfaces/protos';
-import { TasksDTO_createTask, TasksDTO_updateTask } from './dto/tasks.dto';
+import { Controller, Inject, Get, Param, ParseIntPipe, Post, Body, Put, Delete } from "@nestjs/common";
+import { ClientGrpc } from "@nestjs/microservices";
+import { lastValueFrom } from "rxjs";
+import { TasksProtoInterface } from "src/interfaces/tasks";
+import { TasksDTO_createTask, TasksDTO_updateTask } from "../dto/tasks.dto";
 
 @Controller('tasks')
 export class GatewayTasksController {
