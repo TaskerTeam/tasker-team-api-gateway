@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Inject,
@@ -11,7 +10,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { TasksProtoInterface } from 'src/interfaces/protos';
 import { TasksDTO_createTask, TasksDTO_updateTask } from './dto/tasks.dto';
 
