@@ -13,4 +13,5 @@ export interface TasksProtoInterface {
     UpdateTask: (data: {task: TaskDataInterface}) => Observable<TaskDataInterface>
     DeleteTask: (data: {taskId: number}) => Observable<TaskDataInterface>
     GetTaskById: (data: {taskId: number}) => Observable<TaskDataInterface>
+    GetTasksByStatus: (data: {statusName: string}) => Observable<TaskDataInterface>
 }

@@ -31,6 +31,18 @@ export class GatewayTasksController {
     }
   }
 
+  @Get('/get-by-status/:status')
+  async getTaskByStatus(@Param('status') status: string) {
+    try {
+      const result = await lastValueFrom(
+        this.taskGrpcService.GetTasksByStatus({ statusName: status }),
+      );
+      return result;
+    } catch (_) {
+      return { error: 'Erro durante a comunicação com o serviço' };
+    }
+  }
+
   @Post()
   async createTask(@Body() data: TasksDTO_createTask ) {
     try {

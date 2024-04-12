@@ -62,4 +62,5 @@ export class GatewayNotificationsController {
       return { error: 'Erro durante a comunicação com o serviço' };
     }
   }
+  
 }
