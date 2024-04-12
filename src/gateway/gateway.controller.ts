@@ -8,10 +8,12 @@ import {
   Delete,
   Inject,
   Put,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
-import { TaskDataInterface, TasksProtoInterface } from 'src/interfaces/protos';
+import { TasksProtoInterface } from 'src/interfaces/protos';
+import { TasksDTO_createTask, TasksDTO_updateTask } from './dto/tasks.dto';
 
 @Controller('tasks')
 export class GatewayTasksController {
@@ -24,52 +26,51 @@ export class GatewayTasksController {
 
   @Get()
   async getAllTasks() {
-    const result = this.taskGrpcService.GetTasks({});
-    const finalResult = await lastValueFrom(result);
-    return finalResult;
+    const result = await lastValueFrom(this.taskGrpcService.GetTasks({}));
+    return result;
   }
 
   @Get(':id')
-  async getTaskById(@Param('id') id: number) {
+  async getTaskById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await lastValueFrom(
         this.taskGrpcService.GetTaskById({ taskId: id }),
       );
       return result;
     } catch (_) {
-      return { error: 'Erro durante a execução' };
+      return { error: 'Erro durante a comunicação com o serviço' };
     }
   }
 
   @Post()
-  async createTask(@Body() data: { task: TaskDataInterface }) {
+  async createTask(@Body() data: TasksDTO_createTask ) {
     try {
-      const result = await lastValueFrom(this.taskGrpcService.CreateTask(data));
+      const result = await lastValueFrom(this.taskGrpcService.CreateTask({task: data}));
       return result;
     } catch (_) {
-      return { error: 'Erro durante a execução' };
+      return { error: 'Erro durante a comunicação com o serviço' };
     }
   }
 
   @Put()
-  async updateTask(@Body() data: { task: TaskDataInterface }) {
+  async updateTask(@Body() data: TasksDTO_updateTask) {
     try {
-      await lastValueFrom(this.taskGrpcService.UpdateTask(data));
+      await lastValueFrom(this.taskGrpcService.UpdateTask({task: data}));
       return {
-        message: `Tarefa de id ${data.task.taskId} atualizada com sucesso!`,
+        message: `Tarefa de id ${data.taskId} atualizada com sucesso!`,
       };
     } catch (_) {
-      return { error: 'Erro durante a execução' };
+      return { error: 'Erro durante a comunicação com o serviço' };
     }
   }
 
   @Delete(':id')
-  async deleteTask(@Param('id') id: number) {
+  async deleteTask(@Param('id', ParseIntPipe) id: number) {
     try {
       await lastValueFrom(this.taskGrpcService.DeleteTask({ taskId: id }));
       return { message: `Tarefa de id ${id} removida com sucesso!` };
     } catch (_) {
-      return { error: 'Erro durante a execução' };
+      return { error: 'Erro durante a comunicação com o serviço' };
     }
   }
 }
