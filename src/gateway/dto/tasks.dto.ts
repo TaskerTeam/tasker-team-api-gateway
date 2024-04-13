@@ -5,7 +5,7 @@ export class TasksDTO_createTask {
     title: string;
     @IsString()
     description: string;
-    @IsDate()
+    @IsString()
     date: string;
 }
 
@@ -16,6 +16,6 @@ export class TasksDTO_updateTask {
     title: string;
     @IsString()
     description: string;
-    @IsDate()
+    @IsString()
     date: string;
 }
